@@ -1,0 +1,56 @@
+form {
+  padding: 5rem;
+  background-color: var(--code);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+@media screen and (max-width: 600px) {
+  form {
+    padding: 2rem;
+  }
+ }
+
+input, select { 
+  background-color: var(--off-white) !important;
+}
+h1 {
+  padding-bottom: 2rem;
+  font-weight: 500;
+}
+label {
+  width: 100%;
+}
+input {
+  border: 1px solid var(--black);
+  border-radius: 2px;
+  padding: 5px;
+  width: 100%;
+}
+.chakra-form-control {
+  gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
+ }
+
+.submit-button {
+  margin-top: 3rem;
+  color: white;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.25s;
+  background-color: var(--black);
+}
+.submit-button:hover {
+  border-color: #6104b8;
+}
+.submit-button:focus,
+.submit-button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
