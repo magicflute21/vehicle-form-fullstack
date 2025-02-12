@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValueText,
 } from "./ui/select"
+import { useCarModels } from "../hooks/useCarModels";
 
 type FormData = {
   name: string;
@@ -20,23 +21,41 @@ type FormData = {
  }
 
 export default function VehicleForm() {
+  const { options } = useCarModels();
   const { register, handleSubmit, control } = useForm<FormData>();
+
 
   const onSubmit = (data: FormData) => console.log(data);
 
-  const options = createListCollection({
-    items: [
-    { id: 1, value: 'mrc', label: 'Mercedes-Benz' },
-    { id: 2, value: 'bmw', label: 'BMW' },
-    { id: 3, value: '200', label: 'C 200' },
-    { id: 4, value: '400', label: 'C 400' },
-    { id: 5, value: '500', label: 'C 500' },
-    ],
+
+  const getItemStyles = (type: 'brand' | 'series' | 'model') => {
+    switch(type) {
+      case 'brand':
+        return {
+          paddingLeft: '8px',
+          fontWeight: 'bold',
+          color: 'gray.600',
+        };
+      case 'series':
+        return {
+          paddingLeft: '16px',
+          fontWeight: 'semibold',
+          color: 'gray.600',
+        };
+      case 'model':
+        return {
+          paddingLeft: '36px',
+        };
+    }
+  };
+
+  const selectOptions = createListCollection({
+    items: options,
   })
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <h1>Palun sisestage enda kontaktandmed ning automargid</h1>
+      <h1>Palun sisestage enda kontaktandmed ning automargid, millest olete huvitatud</h1>
       <FormControl>
         <FormLabel id="name">Ees- ja perekonnanimi:</FormLabel>
         <Input aria-labelledby="name" {...register("name", { required: true})} />
@@ -53,40 +72,46 @@ export default function VehicleForm() {
               control={control}
               name="models"
               render={({ field }) => (
-                <SelectRoot
-                  multiple
-                  name={field.name}
-                  value={field.value}
-                  onValueChange={({ value }) => field.onChange(value)}
-                  onInteractOutside={() => field.onBlur()}
-                  collection={options}
-                  bg="whiteAlpha.700"
-                  border={"1px solid black"}
-                  aria-labelledby="models-select"
-                >
-                  <SelectTrigger clearable>
-                    <SelectValueText placeholder="Valige mudelid">
-                    {() => {
-                      if (field.value.length === 1) return options.items.find((item) => item.value === field.value[0])?.label;
-                      return `${field.value.length} valitud`;
-                    }}
-                    </SelectValueText>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {options.items.map((model) => (
-                      <SelectItem item={model} key={model.value}>
-                        {model.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </SelectRoot>
-              )}
+                  <SelectRoot
+                    multiple
+                    name={field.name}
+                    value={field.value}
+                    onValueChange={({ value }) => field.onChange(value)}
+                    onInteractOutside={() => field.onBlur()}
+                    collection={selectOptions}
+                    bg="whiteAlpha.700"
+                    border={"1px solid black"}
+                    aria-labelledby="models-select"
+                  >
+                    <SelectTrigger clearable>
+                      <SelectValueText placeholder="Valige mudelid">
+                      {() => {
+                        if (field.value.length === 1) return selectOptions.items.find((item) => item.value === field.value[0])?.label;
+                        return `${field.value.length} valitud`;
+                      }}
+                      </SelectValueText>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {selectOptions.items.map((item) => (
+                          <SelectItem 
+                          item={item} 
+                          key={item.value}
+                          style={getItemStyles(item.type)}
+                          >
+                            {item.label}
+                          </SelectItem>
+                        )
+                      )}
+                    </SelectContent>
+                  </SelectRoot>
+                )
+              }
             />
       </FormControl>
 
       <FormControl>
         <FormLabel id="licence">Kas teil on kehtiv juhiluba:</FormLabel>
-        <Checkbox {...register("licence", { required: true})}
+        <Checkbox {...register("licence")}
             aria-labelledby="licence"
              _checked={{
               "& .chakra-checkbox__control": { background: "#303030" }
