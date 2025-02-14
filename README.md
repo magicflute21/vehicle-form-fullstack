@@ -14,7 +14,6 @@ A web application for collecting and managing vehicle model preferences and user
 1. Clone the repository:
 ```bash
 git clone https://github.com/magicflute21/vehicle-form-fullstack.git
-cd vehicle-form-fullstack
 ```
 
 1. Go inside the app vehicle-form-fullstack:
