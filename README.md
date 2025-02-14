@@ -2,6 +2,8 @@
 
 A web application for collecting and managing vehicle model preferences and user contact information.
 
+![image](project_screenshot.png)
+
 ## Prerequisites
 
 - Docker Desktop
