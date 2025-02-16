@@ -3,7 +3,6 @@ FROM node:18-alpine AS build
 # Install necessary build dependencies
 RUN apk add --no-cache python3 make g++
 
-ENV NODE_ENV=production
 ENV VITE_API_URL=http://backend:8080
 
 WORKDIR /app
@@ -13,7 +12,7 @@ COPY package*.json ./
 
 # Clean install with force and explicit platform
 RUN npm cache clean --force
-RUN npm install --force --platform=linux --arch=x64
+RUN npm install --force --platform=linux --arch=x64 --include=dev
 
 # Explicitly install Rollup native bindings
 RUN npm install @rollup/rollup-linux-x64-musl
