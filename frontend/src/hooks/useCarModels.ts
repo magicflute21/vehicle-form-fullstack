@@ -70,39 +70,6 @@ export const useCarModels = () => {
     return allOptions;
   };
 
-  const getAllChildValues = (value: string, options: SelectOption[]): string[] => {
-    const option = options.find(opt => opt.value === value);
-    if (!option) return [];
-    return option.childIds;
-  };
-
-  const getParentValue = (value: string, options: SelectOption[]): string | null => {
-    const option = options.find(opt => opt.value === value);
-    return option?.parentId || null;
-  };
-
-  const handleSelectionChange = (
-    selectedValues: string[], 
-    newValue: string, 
-    options: SelectOption[]
-  ): string[] => {
-    const option = options.find(opt => opt.value === newValue);
-    if (!option) return selectedValues;
-
-    const isSelected = selectedValues.includes(newValue);
-    
-    if (isSelected) {
-      const childrenToRemove = getAllChildValues(newValue, options);
-      return selectedValues.filter(v => 
-        v !== newValue && !childrenToRemove.includes(v)
-      );
-    } else {
-      const childrenToAdd = getAllChildValues(newValue, options);
-      return [...selectedValues, newValue, ...childrenToAdd];
-    }
-  };
-
-
   useEffect(() => {
     const fetchCarModels = async () => {
       setIsLoading(true);
@@ -128,8 +95,5 @@ export const useCarModels = () => {
     options, 
     isLoading, 
     error,
-    handleSelectionChange,
-    getAllChildValues,
-    getParentValue
   };
 };

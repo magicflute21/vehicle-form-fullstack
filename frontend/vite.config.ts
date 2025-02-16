@@ -10,6 +10,14 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './src/setupTests.ts',
     css: true,
+    coverage: {
+      exclude: [
+        'src/App.tsx',
+        'src/main.tsx',
+        'src/types/**',
+        'src/components/ui/**'  // chakra components
+      ]
+    },
   },
   server: {
     host: true,
