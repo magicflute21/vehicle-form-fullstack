@@ -1,7 +1,13 @@
 import { useState, useEffect } from 'react';
 import { CarBrand, SelectOption } from '../types/car';
 
-export const useCarModels = () => {
+export type UseCarModelsReturn = {
+  isLoading: boolean;
+  error: string | null;
+  options: Array<SelectOption>;
+}
+
+export const useCarModels = (): UseCarModelsReturn => {
   const [options, setOptions] = useState<SelectOption[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

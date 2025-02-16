@@ -1,7 +1,7 @@
 import { useForm, Controller } from "react-hook-form"
 import './vehicleform.css';
 import { createListCollection, Input  } from "@chakra-ui/react";
-import { FormControl, FormLabel } from '@chakra-ui/form-control';
+import { FormControl, FormLabel, FormErrorMessage  } from '@chakra-ui/form-control';
 import { Checkbox } from "./ui/checkbox";
 
 import {
@@ -12,6 +12,7 @@ import {
   SelectValueText,
 } from "./ui/select"
 import { useCarModels } from "../hooks/useCarModels";
+import getOptionStyle from "../util/getOptionStyle";
 
 type FormData = {
   name: string;
@@ -22,55 +23,68 @@ type FormData = {
 
 export default function VehicleForm() {
   const { options } = useCarModels();
-  const { register, handleSubmit, control } = useForm<FormData>();
-
+  const { 
+    register, 
+    handleSubmit, 
+    control,
+    formState: { errors }
+  } = useForm<FormData>();
 
   const onSubmit = (data: FormData) => console.log(data);
-
-
-  const getItemStyles = (type: 'brand' | 'series' | 'model') => {
-    switch(type) {
-      case 'brand':
-        return {
-          paddingLeft: '8px',
-          fontWeight: 'bold',
-          color: 'gray.600',
-        };
-      case 'series':
-        return {
-          paddingLeft: '16px',
-          fontWeight: 'semibold',
-          color: 'gray.600',
-        };
-      case 'model':
-        return {
-          paddingLeft: '36px',
-        };
-    }
-  };
 
   const selectOptions = createListCollection({
     items: options,
   })
+  console.log('options', options);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <h1>Palun sisestage enda kontaktandmed ning automargid, millest olete huvitatud</h1>
-      <FormControl>
-        <FormLabel id="name">Ees- ja perekonnanimi:</FormLabel>
-        <Input aria-labelledby="name" {...register("name", { required: true})} />
+      <FormControl isInvalid={!!errors.name}>
+        <FormLabel id="name">Ees- ja perekonnanimi:<span className="asterisk">*</span></FormLabel>
+        <Input 
+        aria-labelledby="name" 
+        borderColor={errors.name ? "red.500" : "initial"}
+        {...register("name", { 
+          required: "Nimi on kohustuslik väli", 
+          minLength: {
+            value: 2,
+            message: "Nimi peab olema vähemalt 2 tähemärki pikk"
+          }
+        })} 
+        />
+        <FormErrorMessage style={{ color: 'red' }}>
+          {errors.name?.message}
+        </FormErrorMessage>
       </FormControl>
       
-      <FormControl>
-        <FormLabel id="phone">Kontakttelefon:</FormLabel>
-        <Input aria-labelledby="phone" {...register("phone", { required: true})} />
+      <FormControl isInvalid={!!errors.phone}>
+        <FormLabel id="phone">Kontakttelefon:<span className="asterisk">*</span></FormLabel>
+        <Input 
+        aria-labelledby="phone" 
+        borderColor={errors.phone ? "red.500" : "initial"}
+        {...register("phone", { 
+          required: "Telefon on kohustuslik väli",
+          pattern: {
+            value: /^[0-9]+$/,
+            message: "Palun sisestage ainult numbrid"
+          }
+        })} 
+        />
+        <FormErrorMessage style={{ color: 'red' }}>
+          {errors.phone?.message}
+        </FormErrorMessage>
       </FormControl>
 
-      <FormControl>
-        <FormLabel id="models-select">Automargid:</FormLabel>
+      <FormControl isInvalid={!!errors.models}>
+        <FormLabel id="models-select">Automargid:<span className="asterisk">*</span></FormLabel>
         <Controller
               control={control}
               name="models"
+              rules={{
+                required: "Palun valige vähemalt üks automudel",
+                validate: (value) => value.length > 0 || "Palun valige vähemalt üks automudel"
+              }}
               render={({ field }) => (
                   <SelectRoot
                     multiple
@@ -80,7 +94,7 @@ export default function VehicleForm() {
                     onInteractOutside={() => field.onBlur()}
                     collection={selectOptions}
                     bg="whiteAlpha.700"
-                    border={"1px solid black"}
+                    border={errors.models ? "1px solid red" : "1px solid black"}
                     aria-labelledby="models-select"
                   >
                     <SelectTrigger clearable>
@@ -96,7 +110,7 @@ export default function VehicleForm() {
                           <SelectItem 
                           item={item} 
                           key={item.value}
-                          style={getItemStyles(item.type)}
+                          style={getOptionStyle(item.type)}
                           >
                             {item.label}
                           </SelectItem>
@@ -107,6 +121,7 @@ export default function VehicleForm() {
                 )
               }
             />
+            <FormErrorMessage style={{ color: 'red' }}>{errors.models?.message}</FormErrorMessage>
       </FormControl>
 
       <FormControl>

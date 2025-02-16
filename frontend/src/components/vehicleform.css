@@ -55,3 +55,8 @@ input {
 .submit-button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+
+.asterisk {
+  color: #E53E3E; 
+  /* chakra red 500 */
+}
